@@ -1,1 +1,7 @@
-Infrastructura/Keys/ssh-key-2025-04-09.key
+# Ignore specific private key
+Infrastructure/Keys/ssh-key-2025-04-09.key
+
+# Ignore all private keys
+*.key
+*_rsa
+id_*
