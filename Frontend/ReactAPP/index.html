@@ -1,13 +1,1942 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>TeKSTROGEN - The Hormone of Underground Electronic Music</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#00f0ff", secondary: "#ff00cc" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      body {
+        font-family: "Orbitron", sans-serif;
+        background-color: #000;
+        color: #fff;
+        overflow-x: hidden;
+      }
+      .neon-text {
+        text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+      }
+      .neon-border {
+        box-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
+      }
+      .glow-button {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .glow-button:hover {
+        box-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+      }
+      .glow-button::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(0, 240, 255, 0.2),
+          transparent
+        );
+        transform: rotate(45deg);
+        z-index: -1;
+        transition: all 0.5s ease;
+      }
+      .glow-button:hover::after {
+        left: 100%;
+      }
+      .audio-player {
+        position: relative;
+        height: 50px;
+      }
+      .audio-player .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #00f0ff, #ff00cc);
+        width: 67%;
+        transition: width 0.1s linear;
+      }
+      .audio-visualizer {
+        display: flex;
+        align-items: flex-end;
+        height: 30px;
+        gap: 2px;
+      }
+      .audio-visualizer .bar {
+        width: 3px;
+        background: linear-gradient(to top, #00f0ff, #ff00cc);
+        animation: visualize 0.5s infinite alternate;
+      }
+      @keyframes visualize {
+        0% {
+          height: 5px;
+        }
+        100% {
+          height: 100%;
+        }
+      }
+      .audio-visualizer .bar:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .audio-visualizer .bar:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .audio-visualizer .bar:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      .audio-visualizer .bar:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+      .audio-visualizer .bar:nth-child(5) {
+        animation-delay: 0.5s;
+      }
+      .audio-visualizer .bar:nth-child(6) {
+        animation-delay: 0.4s;
+      }
+      .audio-visualizer .bar:nth-child(7) {
+        animation-delay: 0.3s;
+      }
+      .audio-visualizer .bar:nth-child(8) {
+        animation-delay: 0.2s;
+      }
+      .audio-visualizer .bar:nth-child(9) {
+        animation-delay: 0.1s;
+      }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 50;
+        min-width: 200px;
+        background-color: rgba(0, 0, 0, 0.9);
+        border: 1px solid #333;
+        background-color: rgba(0, 0, 0, 0.9); /* Fallback for unsupported browsers */
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+      }
+      .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 5px;
+        background: #333;
+        border-radius: 5px;
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #00f0ff;
+        cursor: pointer;
+      }
+      .chat-messages {
+        height: 300px;
+        overflow-y: auto;
+      }
+      .chat-message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        max-width: 80%;
+      }
+      .chat-message.user {
+        background-color: rgba(0, 240, 255, 0.2);
+        margin-left: auto;
+      }
+      .chat-message.other {
+        background-color: rgba(51, 51, 51, 0.5);
+      }
+      .event-card {
+        transition: all 0.3s ease;
+      }
+      .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+      }
+      .custom-checkbox {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+      }
+      .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: transparent;
+        border: 2px solid #333;
+        border-radius: 4px;
+      }
+      .custom-checkbox:hover input ~ .checkmark {
+        border-color: #00f0ff;
+      }
+      .custom-checkbox input:checked ~ .checkmark {
+        background-color: transparent;
+        border-color: #00f0ff;
+      }
+      .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+      .custom-checkbox input:checked ~ .checkmark:after {
+        display: block;
+      }
+      .custom-checkbox .checkmark:after {
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid #00f0ff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      .custom-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+      }
+      .custom-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #333;
+        transition: 0.4s;
+        border-radius: 24px;
+      }
+      .switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+        background-color: #00f0ff;
+      }
+      input:checked + .switch-slider:before {
+        transform: translateX(26px);
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- Header with Navigation -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-80 backdrop-blur-md border-b border-gray-800"
+    >
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <a
+              href="#"
+              class="text-3xl font-['Orbitron'] font-black tracking-wider text-primary mr-8"
+              >TeKSTROGEN</a
+            >
+            <nav class="hidden md:flex space-x-1">
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Listen Now
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Live Stream</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Schedule</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Past Sets</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Request Track</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Radio Chat</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  About
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >TeKSTROGEN Story</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Our Mission</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800">Team</a>
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Partners</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Press Kit</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Free Party
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Upcoming Events</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Past Events</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Location Maps</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Safety Guidelines</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Equipment Rental</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Legal Information</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Party Reports</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Community
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Forum</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Member Profiles</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Crew Directory</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Artist Spotlight</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >DIY Guides</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Knowledge Base</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Support Groups</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Stay Tuned
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Newsletter</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Event Calendar</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Announcements</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Weather Alerts</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Transportation Info</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Accommodation Tips</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Gallery
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Photo Albums</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Video Archive</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Art Collection</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Sound System Showcase</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Location Spotlights</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Community Uploads</a
+                  >
+                </div>
+              </div>
+              <div class="dropdown relative">
+                <button
+                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
+                >
+                  Contact
+                </button>
+                <div class="dropdown-menu">
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >General Inquiries</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Artist Submissions</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Event Registration</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Support Ticket</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Feedback Form</a
+                  >
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                    >Business Proposals</a
+                  >
+                </div>
+              </div>
+            </nav>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button
+              class="bg-primary bg-opacity-20 hover:bg-opacity-30 text-primary px-6 py-2 !rounded-button glow-button whitespace-nowrap"
+            >
+              <i class="ri-play-fill ri-lg"></i>
+            </button>
+            <button class="md:hidden">
+              <div class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-menu-line ri-lg"></i>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Hero Section -->
+    <section
+      class="relative h-screen flex items-center justify-center overflow-hidden"
+      style="
+        background-image: url('https://readdy.ai/api/search-image?query=underground%20tekno%20party%20scene%20with%20massive%20sound%20system%20setup%2C%20intense%20laser%20light%20show%2C%20psychedelic%20projections%20on%20walls%2C%20crowd%20silhouettes%2C%20smoke%20effects%2C%20industrial%20warehouse%20setting%2C%20high%20contrast%20lighting%2C%20sharp%20details%2C%20vibrant%20neon%20colors%2C%20cinematic%20composition%2C%20ultra%20high%20quality&width=1920&height=1080&seq=27&orientation=landscape');
+        background-size: cover;
+        background-position: center;
+      "
+    >
+      <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl">
+          <h1 class="text-5xl md:text-7xl font-bold mb-6 neon-text">
+            TeKSTROGEN
+          </h1>
+          <p class="text-xl md:text-2xl mb-8">
+            The hormone of underground electronic music. Experience the pulse of
+            free party culture, 24/7 beats, and the spirit of tekno community.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button
+              class="bg-primary text-black font-bold px-8 py-3 !rounded-button glow-button whitespace-nowrap"
+            >
+              <i class="ri-headphone-fill ri-lg mr-2"></i> Listen Now
+            </button>
+            <button
+              class="bg-transparent border-2 border-white hover:border-primary text-white hover:text-primary px-8 py-3 !rounded-button whitespace-nowrap"
+            >
+              <i class="ri-calendar-event-fill ri-lg mr-2"></i> Upcoming Events
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Radio Player Fixed Bar -->
+    <div
+      class="fixed bottom-0 left-0 right-0 bg-black bg-opacity-90 backdrop-blur-md border-t border-gray-800 z-40"
+    >
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="flex items-center mb-3 md:mb-0">
+            <button
+              class="w-10 h-10 bg-primary bg-opacity-20 rounded-full flex items-center justify-center mr-4"
+            >
+              <i class="ri-play-fill ri-lg text-primary"></i>
+            </button>
+            <div>
+              <div class="flex items-center">
+                <h3 class="font-bold mr-2">TeKSTROGEN RADIO</h3>
+                <span class="text-xs bg-red-500 px-2 py-0.5 rounded-full"
+                  >LIVE</span
+                >
+              </div>
+              <p class="text-sm text-gray-400">
+                DJ Acid_Tribe - Spiral Tekno Journey (Live Set)
+              </p>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 mb-3 md:mb-0">
+            <div class="audio-player">
+              <div class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>01:23</span>
+                <span>02:45</span>
+              </div>
+              <input type="range" min="0" max="100" value="67" class="w-full" />
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="audio-visualizer hidden md:flex">
+              <div class="bar" style="height: 15px"></div>
+              <div class="bar" style="height: 20px"></div>
+              <div class="bar" style="height: 12px"></div>
+              <div class="bar" style="height: 25px"></div>
+              <div class="bar" style="height: 18px"></div>
+              <div class="bar" style="height: 10px"></div>
+              <div class="bar" style="height: 22px"></div>
+              <div class="bar" style="height: 15px"></div>
+              <div class="bar" style="height: 20px"></div>
+            </div>
+            <div class="flex items-center">
+              <button
+                class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+              >
+                <i class="ri-volume-down-fill ri-lg"></i>
+              </button>
+              <input type="range" min="0" max="100" value="80" class="w-20" />
+              <button
+                class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+              >
+                <i class="ri-volume-up-fill ri-lg"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <main class="pt-24 pb-24">
+      <!-- About Section -->
+      <section class="py-16 bg-black bg-opacity-80">
+        <div class="container mx-auto px-4">
+          <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+              The Underground Beat <span class="text-primary">Revolution</span>
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+              <div>
+                <p class="mb-4">
+                  TeKSTROGEN is more than just a radio station - it's the
+                  lifeblood of the underground electronic music scene. Born from
+                  the spirit of free parties and sound system culture, we
+                  represent the raw, unfiltered essence of tekno in all its
+                  forms.
+                </p>
+                <p class="mb-4">
+                  Our mission is to preserve and promote the authentic
+                  underground experience, connecting communities worldwide
+                  through the universal language of beats.
+                </p>
+                <p class="mb-6">
+                  From acid tekno to hardtek, from forest raves to warehouse
+                  parties, TeKSTROGEN pulses through the veins of the global
+                  free party movement.
+                </p>
+                <button
+                  class="bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-black px-6 py-2 !rounded-button whitespace-nowrap"
+                >
+                  Learn Our Story
+                </button>
+              </div>
+              <div class="relative">
+                <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                  <img
+                    src="https://readdy.ai/api/search-image?query=underground%20sound%20system%20setup%20with%20large%20speakers%20stacked%20in%20pyramid%20formation%2C%20tribal%20decorations%2C%20anarchist%20symbols%2C%20dark%20atmosphere%20with%20colorful%20lights%2C%20dust%20particles%20visible%2C%20high%20quality%20cinematic&width=800&height=600&seq=2&orientation=landscape"
+                    alt="Sound System Culture"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <div
+                  class="absolute -bottom-4 -right-4 bg-black p-4 rounded-lg border border-gray-800"
+                >
+                  <div class="flex items-center mb-2">
+                    <div
+                      class="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"
+                    ></div>
+                    <span class="text-sm font-bold">LIVE NOW</span>
+                  </div>
+                  <p class="text-xs text-gray-400">1,247 listeners</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Upcoming Events Section -->
+      <section
+        class="py-16"
+        style="
+          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20background%20with%20subtle%20geometric%20patterns%2C%20minimal%20techno%20aesthetic%2C%20low%20light%2C%20dark%20colors%20with%20hints%20of%20neon%20blue%20and%20purple%2C%20digital%20texture%2C%20high%20quality&width=1920&height=500&seq=3&orientation=landscape');
+          background-size: cover;
+          background-position: center;
+        "
+      >
+        <div class="container mx-auto px-4">
+          <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold">
+              Upcoming <span class="text-primary">Free Parties</span>
+            </h2>
+            <a href="#" class="text-primary hover:underline flex items-center">
+              View All <i class="ri-arrow-right-line ml-1"></i>
+            </a>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div
+              class="bg-black bg-opacity-80 rounded-lg overflow-hidden border border-gray-800 event-card"
+            >
+              <div class="relative">
+                <img
+                  src="https://readdy.ai/api/search-image?query=forest%20rave%20party%20at%20night%2C%20sound%20system%20setup%20among%20trees%2C%20laser%20lights%20cutting%20through%20fog%2C%20people%20dancing%2C%20tribal%20decorations%2C%20campfires%20visible%20in%20background%2C%20high%20quality%20cinematic&width=600&height=400&seq=4&orientation=landscape"
+                  alt="Forest Tekno Gathering"
+                  class="w-full h-48 object-cover"
+                />
+                <div
+                  class="absolute top-3 right-3 bg-primary text-black text-xs font-bold px-2 py-1 rounded-full"
+                >
+                  FREE ENTRY
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="font-bold text-lg">Forest Tekno Gathering</h3>
+                    <p class="text-sm text-gray-400">
+                      By Spiral Tribe Sound System
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-primary font-bold">28</p>
+                    <p class="text-xs text-gray-400">APR</p>
+                  </div>
+                </div>
+                <div class="flex items-center mb-3">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-map-pin-line"></i>
+                  </div>
+                  <p class="text-sm">Mystical Forest, 20km from Berlin</p>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-time-line"></i>
+                  </div>
+                  <p class="text-sm">22:00 - Sunrise</p>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Acid Tekno</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Hardtek</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Tribe</span
+                  >
+                </div>
+                <button
+                  class="w-full bg-transparent border border-primary text-primary hover:bg-primary hover:text-black py-2 !rounded-button whitespace-nowrap"
+                >
+                  Get Location
+                </button>
+              </div>
+            </div>
+            <div
+              class="bg-black bg-opacity-80 rounded-lg overflow-hidden border border-gray-800 event-card"
+            >
+              <div class="relative">
+                <img
+                  src="https://readdy.ai/api/search-image?query=abandoned%20warehouse%20party%2C%20industrial%20setting%2C%20massive%20sound%20system%2C%20laser%20lights%2C%20smoke%20machines%2C%20graffiti%20on%20walls%2C%20crowd%20dancing%2C%20underground%20atmosphere%2C%20high%20quality%20cinematic&width=600&height=400&seq=5&orientation=landscape"
+                  alt="Warehouse Tekno Assault"
+                  class="w-full h-48 object-cover"
+                />
+                <div
+                  class="absolute top-3 right-3 bg-primary text-black text-xs font-bold px-2 py-1 rounded-full"
+                >
+                  FREE ENTRY
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="font-bold text-lg">Warehouse Tekno Assault</h3>
+                    <p class="text-sm text-gray-400">
+                      By Digital Nomads Collective
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-primary font-bold">05</p>
+                    <p class="text-xs text-gray-400">MAY</p>
+                  </div>
+                </div>
+                <div class="flex items-center mb-3">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-map-pin-line"></i>
+                  </div>
+                  <p class="text-sm">Industrial Zone, Prague Outskirts</p>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-time-line"></i>
+                  </div>
+                  <p class="text-sm">23:00 - 12:00 Next Day</p>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Frenchcore</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Mental Tribe</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Hardtekno</span
+                  >
+                </div>
+                <button
+                  class="w-full bg-transparent border border-primary text-primary hover:bg-primary hover:text-black py-2 !rounded-button whitespace-nowrap"
+                >
+                  Get Location
+                </button>
+              </div>
+            </div>
+            <div
+              class="bg-black bg-opacity-80 rounded-lg overflow-hidden border border-gray-800 event-card"
+            >
+              <div class="relative">
+                <img
+                  src="https://readdy.ai/api/search-image?query=desert%20party%20at%20sunset%2C%20sound%20system%20setup%20on%20sand%20dunes%2C%20colorful%20flags%20and%20decorations%2C%20people%20dancing%2C%20dust%20clouds%2C%20orange%20sky%2C%20tribal%20atmosphere%2C%20high%20quality%20cinematic&width=600&height=400&seq=6&orientation=landscape"
+                  alt="Desert Tekno Ritual"
+                  class="w-full h-48 object-cover"
+                />
+                <div
+                  class="absolute top-3 right-3 bg-primary text-black text-xs font-bold px-2 py-1 rounded-full"
+                >
+                  FREE ENTRY
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="font-bold text-lg">Desert Tekno Ritual</h3>
+                    <p class="text-sm text-gray-400">
+                      By Nomadic Sound Caravan
+                    </p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-primary font-bold">12</p>
+                    <p class="text-xs text-gray-400">MAY</p>
+                  </div>
+                </div>
+                <div class="flex items-center mb-3">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-map-pin-line"></i>
+                  </div>
+                  <p class="text-sm">Secret Desert Location, Spain</p>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-gray-400 mr-2"
+                  >
+                    <i class="ri-time-line"></i>
+                  </div>
+                  <p class="text-sm">Sunset to Sunrise</p>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Desert Tekno</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Psychedelic</span
+                  >
+                  <span class="text-xs bg-gray-800 px-2 py-1 rounded-full"
+                    >Tribal</span
+                  >
+                </div>
+                <button
+                  class="w-full bg-transparent border border-primary text-primary hover:bg-primary hover:text-black py-2 !rounded-button whitespace-nowrap"
+                >
+                  Get Location
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Radio Schedule Section -->
+      <section class="py-16 bg-black bg-opacity-90">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+            Radio <span class="text-primary">Schedule</span>
+          </h2>
+          <div class="max-w-4xl mx-auto">
+            <div class="flex mb-6">
+              <div class="flex space-x-1 bg-gray-900 rounded-full p-1">
+                <button
+                  class="px-4 py-2 rounded-full bg-primary text-black font-bold whitespace-nowrap"
+                >
+                  Today
+                </button>
+                <button
+                  class="px-4 py-2 rounded-full text-white hover:bg-gray-800 whitespace-nowrap"
+                >
+                  Tomorrow
+                </button>
+                <button
+                  class="px-4 py-2 rounded-full text-white hover:bg-gray-800 whitespace-nowrap"
+                >
+                  This Week
+                </button>
+              </div>
+            </div>
+            <div class="bg-gray-900 bg-opacity-50 rounded-lg overflow-hidden">
+              <div
+                class="p-4 bg-gray-800 border-b border-gray-700 flex justify-between items-center"
+              >
+                <h3 class="font-bold">Monday, April 28, 2025</h3>
+                <div class="flex items-center">
+                  <span class="text-sm text-gray-400 mr-2">Timezone:</span>
+                  <button
+                    class="flex items-center text-sm bg-gray-700 px-2 py-1 rounded"
+                  >
+                    UTC+2 <i class="ri-arrow-down-s-line ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="divide-y divide-gray-800">
+                <div class="p-4 flex items-center">
+                  <div class="w-24 text-center">
+                    <p class="font-bold">06:00</p>
+                    <p class="text-xs text-gray-400">08:00</p>
+                  </div>
+                  <div class="flex-1 ml-4">
+                    <h4 class="font-bold">Morning Acid</h4>
+                    <p class="text-sm text-gray-400">DJ Spiral Vortex</p>
+                  </div>
+                  <div class="flex items-center">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-information-line"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-alarm-line"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="p-4 flex items-center bg-primary bg-opacity-10">
+                  <div class="w-24 text-center">
+                    <p class="font-bold">08:00</p>
+                    <p class="text-xs text-gray-400">10:00</p>
+                  </div>
+                  <div class="flex-1 ml-4">
+                    <div class="flex items-center">
+                      <h4 class="font-bold">Tribal Tekno Journey</h4>
+                      <span
+                        class="ml-2 text-xs bg-red-500 px-2 py-0.5 rounded-full"
+                        >LIVE</span
+                      >
+                    </div>
+                    <p class="text-sm text-gray-400">DJ Acid_Tribe</p>
+                  </div>
+                  <div class="flex items-center">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-primary"
+                    >
+                      <i class="ri-volume-up-fill"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-information-line"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-alarm-line"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="p-4 flex items-center">
+                  <div class="w-24 text-center">
+                    <p class="font-bold">10:00</p>
+                    <p class="text-xs text-gray-400">12:00</p>
+                  </div>
+                  <div class="flex-1 ml-4">
+                    <h4 class="font-bold">Hardtek Madness</h4>
+                    <p class="text-sm text-gray-400">DJ Neural Damage</p>
+                  </div>
+                  <div class="flex items-center">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-information-line"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-alarm-line"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="p-4 flex items-center">
+                  <div class="w-24 text-center">
+                    <p class="font-bold">12:00</p>
+                    <p class="text-xs text-gray-400">14:00</p>
+                  </div>
+                  <div class="flex-1 ml-4">
+                    <h4 class="font-bold">Frenchcore Revolution</h4>
+                    <p class="text-sm text-gray-400">DJ Toxic Frequency</p>
+                  </div>
+                  <div class="flex items-center">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-information-line"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-alarm-line"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="p-4 flex items-center">
+                  <div class="w-24 text-center">
+                    <p class="font-bold">14:00</p>
+                    <p class="text-xs text-gray-400">16:00</p>
+                  </div>
+                  <div class="flex-1 ml-4">
+                    <h4 class="font-bold">Mental Tribe Selections</h4>
+                    <p class="text-sm text-gray-400">DJ Quantum Distortion</p>
+                  </div>
+                  <div class="flex items-center">
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-information-line"></i>
+                    </button>
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-primary"
+                    >
+                      <i class="ri-alarm-line"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 border-t border-gray-700 flex justify-center">
+                <button class="text-primary hover:underline flex items-center">
+                  View Full Schedule <i class="ri-arrow-right-line ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Community Section -->
+      <section
+        class="py-16"
+        style="
+          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20geometric%20pattern%20with%20subtle%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20techno%20style%20background%2C%20high%20quality&width=1920&height=500&seq=7&orientation=landscape');
+          background-size: cover;
+          background-position: center;
+        "
+      >
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+            Join Our <span class="text-primary">Community</span>
+          </h2>
+          <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div
+              class="bg-black bg-opacity-80 rounded-lg p-6 border border-gray-800"
+            >
+              <div class="flex items-center mb-4">
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                >
+                  <i class="ri-message-3-line text-primary ri-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold">Live Chat</h3>
+              </div>
+              <div
+                class="chat-messages bg-gray-900 bg-opacity-50 rounded-lg p-4 mb-4"
+              >
+                <div class="chat-message other">
+                  <div class="flex items-start">
+                    <div
+                      class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                    >
+                      <span class="text-xs">RT</span>
+                    </div>
+                    <div>
+                      <div class="flex items-center">
+                        <p class="text-xs font-bold mr-2">RaveTechie</p>
+                        <span class="text-xs text-gray-400">08:42</span>
+                      </div>
+                      <p class="text-sm">
+                        This acid track is absolutely mental! Anyone know the
+                        ID?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-message other">
+                  <div class="flex items-start">
+                    <div
+                      class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                    >
+                      <span class="text-xs">BS</span>
+                    </div>
+                    <div>
+                      <div class="flex items-center">
+                        <p class="text-xs font-bold mr-2">BassShifter</p>
+                        <span class="text-xs text-gray-400">08:43</span>
+                      </div>
+                      <p class="text-sm">
+                        It's Spiral Tribe - Acid Flashback (Unreleased)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-message other">
+                  <div class="flex items-start">
+                    <div
+                      class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                    >
+                      <span class="text-xs">TD</span>
+                    </div>
+                    <div>
+                      <div class="flex items-center">
+                        <p class="text-xs font-bold mr-2">TeknoDisciple</p>
+                        <span class="text-xs text-gray-400">08:45</span>
+                      </div>
+                      <p class="text-sm">
+                        Anyone going to the forest party this weekend?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-message user">
+                  <div class="flex items-start justify-end">
+                    <div>
+                      <div class="flex items-center justify-end">
+                        <span class="text-xs text-gray-400 mr-2">08:46</span>
+                        <p class="text-xs font-bold">You</p>
+                      </div>
+                      <p class="text-sm">
+                        Count me in for the forest party! This set is fire 🔥
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  class="flex-1 bg-gray-900 border-none text-white px-4 py-2 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <button
+                  class="bg-primary text-black px-4 py-2 rounded-r-lg !rounded-button whitespace-nowrap"
+                >
+                  <i class="ri-send-plane-fill"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="bg-black bg-opacity-80 rounded-lg p-6 border border-gray-800"
+            >
+              <div class="flex items-center mb-6">
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                >
+                  <i class="ri-user-add-line text-primary ri-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold">Join The Tribe</h3>
+              </div>
+              <p class="mb-6">
+                Become part of our global tekno community. Get exclusive access
+                to party locations, unreleased tracks, and connect with
+                like-minded spirits.
+              </p>
+              <form>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium mb-2">Username</label>
+                  <input
+                    type="text"
+                    class="w-full bg-gray-900 border-none text-white px-4 py-2 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="Choose a username"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium mb-2">Email</label>
+                  <input
+                    type="email"
+                    class="w-full bg-gray-900 border-none text-white px-4 py-2 rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="Your email address"
+                  />
+                </div>
+                <div class="mb-6">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" />
+                    <span class="checkmark"></span>
+                    <span class="ml-2 text-sm"
+                      >I agree to receive information about underground events
+                      and music</span
+                    >
+                  </label>
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-primary text-black font-bold py-3 !rounded-button whitespace-nowrap"
+                >
+                  Join Now
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Music Genres Section -->
+      <section class="py-16 bg-black bg-opacity-90">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+            Explore Tekno <span class="text-primary">Genres</span>
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=acid%20tekno%20party%2C%20psychedelic%20visuals%2C%20green%20laser%20lights%2C%20dark%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=8&orientation=landscape"
+                alt="Acid Tekno"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Acid Tekno</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=hardtek%20party%2C%20intense%20atmosphere%2C%20red%20lighting%2C%20massive%20speakers%2C%20crowd%20dancing%20energetically%2C%20high%20quality%20cinematic&width=400&height=300&seq=9&orientation=landscape"
+                alt="Hardtek"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Hardtek</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=frenchcore%20party%2C%20blue%20lighting%2C%20intense%20atmosphere%2C%20crowd%20with%20raised%20hands%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=10&orientation=landscape"
+                alt="Frenchcore"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Frenchcore</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=mental%20tribe%20party%2C%20purple%20lighting%2C%20psychedelic%20decorations%2C%20intense%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=11&orientation=landscape"
+                alt="Mental Tribe"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Mental Tribe</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=tribe%20tekno%20party%2C%20orange%20lighting%2C%20tribal%20decorations%2C%20spiritual%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=12&orientation=landscape"
+                alt="Tribe"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Tribe</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=tekno%20punk%20party%2C%20anarchist%20symbols%2C%20raw%20atmosphere%2C%20DIY%20sound%20system%2C%20graffiti%2C%20high%20quality%20cinematic&width=400&height=300&seq=13&orientation=landscape"
+                alt="Tekno Punk"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Tekno Punk</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=raggatek%20party%2C%20colorful%20lighting%2C%20reggae%20influences%2C%20sound%20system%2C%20smoke%2C%20high%20quality%20cinematic&width=400&height=300&seq=14&orientation=landscape"
+                alt="Raggatek"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Raggatek</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+            <div class="relative rounded-lg overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=psytrance%20party%2C%20forest%20setting%2C%20psychedelic%20decorations%2C%20colorful%20UV%20reactive%20art%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=15&orientation=landscape"
+                alt="Psytrance"
+                class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black to-transparent"
+              ></div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="font-bold text-lg">Psytrance</h3>
+                <div class="flex items-center mt-2">
+                  <div
+                    class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                  >
+                    <i class="ri-play-circle-fill"></i>
+                  </div>
+                  <p class="text-sm">Listen Now</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-8">
+            <button
+              class="bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-black px-8 py-3 !rounded-button whitespace-nowrap"
+            >
+              Explore All Genres
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- Mobile App Section -->
+      <section
+        class="py-16"
+        style="
+          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20techno%20background%20with%20subtle%20blue%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20style%2C%20high%20quality&width=1920&height=500&seq=16&orientation=landscape');
+          background-size: cover;
+          background-position: center;
+        "
+      >
+        <div class="container mx-auto px-4">
+          <div class="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
+            <div>
+              <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                Take TeKSTROGEN <span class="text-primary">Anywhere</span>
+              </h2>
+              <p class="mb-6">
+                Download our mobile app and never miss a beat. Stream our radio
+                station 24/7, get instant notifications about secret party
+                locations, and connect with the global tekno community on the
+                go.
+              </p>
+              <div class="space-y-4 mb-8">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                  >
+                    <i class="ri-radio-line text-primary"></i>
+                  </div>
+                  <p>24/7 streaming with offline listening</p>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                  >
+                    <i class="ri-notification-line text-primary"></i>
+                  </div>
+                  <p>Real-time party location alerts</p>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                  >
+                    <i class="ri-chat-1-line text-primary"></i>
+                  </div>
+                  <p>Community chat and private messaging</p>
+                </div>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 flex items-center justify-center bg-primary bg-opacity-20 rounded-full mr-4"
+                  >
+                    <i class="ri-map-pin-line text-primary"></i>
+                  </div>
+                  <p>Interactive maps with navigation to events</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-4">
+                <a
+                  href="#"
+                  class="flex items-center bg-black hover:bg-gray-900 border border-gray-700 px-4 py-2 rounded-lg !rounded-button whitespace-nowrap"
+                >
+                  <div class="w-8 h-8 flex items-center justify-center mr-2">
+                    <i class="ri-google-play-fill ri-lg"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-400">Get it on</p>
+                    <p class="font-bold">Google Play</p>
+                  </div>
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center bg-black hover:bg-gray-900 border border-gray-700 px-4 py-2 rounded-lg !rounded-button whitespace-nowrap"
+                >
+                  <div class="w-8 h-8 flex items-center justify-center mr-2">
+                    <i class="ri-apple-fill ri-lg"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs text-gray-400">Download on the</p>
+                    <p class="font-bold">App Store</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="relative">
+              <div
+                class="absolute -top-10 -left-10 w-40 h-40 bg-primary bg-opacity-10 rounded-full blur-xl"
+              ></div>
+              <div
+                class="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary bg-opacity-10 rounded-full blur-xl"
+              ></div>
+              <img
+                src="https://readdy.ai/api/search-image?query=smartphone%20displaying%20music%20app%20interface%20with%20dark%20theme%2C%20neon%20blue%20accents%2C%20sound%20visualization%2C%20album%20artwork%2C%20tekno%20music%20player%20UI%2C%20high%20quality&width=600&height=800&seq=17&orientation=portrait"
+                alt="TeKSTROGEN Mobile App"
+                class="w-full h-auto rounded-xl border border-gray-800 relative z-10"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Gallery Preview Section -->
+      <section class="py-16 bg-black bg-opacity-90">
+        <div class="container mx-auto px-4">
+          <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold">
+              Gallery <span class="text-primary">Highlights</span>
+            </h2>
+            <a href="#" class="text-primary hover:underline flex items-center">
+              View Full Gallery <i class="ri-arrow-right-line ml-1"></i>
+            </a>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=underground%20tekno%20party%20with%20massive%20sound%20system%2C%20crowd%20dancing%2C%20laser%20lights%2C%20smoke%2C%20high%20quality%20cinematic&width=500&height=500&seq=18&orientation=squarish"
+                alt="Gallery Image 1"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=close-up%20of%20DIY%20sound%20system%20speakers%20at%20tekno%20party%2C%20technical%20setup%2C%20wires%2C%20high%20quality%20cinematic&width=500&height=500&seq=19&orientation=squarish"
+                alt="Gallery Image 2"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=DJ%20performing%20at%20underground%20tekno%20party%2C%20vinyl%20records%2C%20mixer%2C%20headphones%2C%20focused%20expression%2C%20high%20quality%20cinematic&width=500&height=500&seq=20&orientation=squarish"
+                alt="Gallery Image 3"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=psychedelic%20UV%20reactive%20decorations%20at%20tekno%20party%2C%20tribal%20patterns%2C%20spiritual%20symbols%2C%20neon%20colors%2C%20high%20quality%20cinematic&width=500&height=500&seq=21&orientation=squarish"
+                alt="Gallery Image 4"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=aerial%20view%20of%20forest%20tekno%20party%20at%20night%2C%20sound%20systems%2C%20tents%2C%20cars%2C%20campfires%2C%20high%20quality%20cinematic&width=500&height=500&seq=22&orientation=squarish"
+                alt="Gallery Image 5"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=crowd%20dancing%20at%20tekno%20party%2C%20silhouettes%2C%20laser%20lights%2C%20smoke%2C%20energetic%20atmosphere%2C%20high%20quality%20cinematic&width=500&height=500&seq=23&orientation=squarish"
+                alt="Gallery Image 6"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=sunset%20at%20desert%20tekno%20party%2C%20silhouette%20of%20sound%20system%20against%20orange%20sky%2C%20people%20dancing%2C%20high%20quality%20cinematic&width=500&height=500&seq=24&orientation=squarish"
+                alt="Gallery Image 7"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="relative aspect-square overflow-hidden group">
+              <img
+                src="https://readdy.ai/api/search-image?query=close-up%20of%20vinyl%20record%20playing%20on%20turntable%20at%20tekno%20party%2C%20DJ%20hands%2C%20mixer%20controls%2C%20high%20quality%20cinematic&width=500&height=500&seq=25&orientation=squarish"
+                alt="Gallery Image 8"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100"
+              >
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-primary rounded-full"
+                >
+                  <i class="ri-zoom-in-line ri-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Newsletter Section -->
+      <section
+        class="py-16"
+        style="
+          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20background%20with%20subtle%20blue%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20techno%20style%2C%20high%20quality&width=1920&height=500&seq=26&orientation=landscape');
+          background-size: cover;
+          background-position: center;
+        "
+      >
+        <div class="container mx-auto px-4">
+          <div
+            class="max-w-3xl mx-auto bg-black bg-opacity-80 rounded-xl p-8 border border-gray-800"
+          >
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center">
+              Stay <span class="text-primary">Connected</span>
+            </h2>
+            <p class="text-center mb-8">
+              Subscribe to our newsletter for exclusive party locations,
+              unreleased tracks, and the latest from the underground tekno
+              scene.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4">
+              <input
+                type="email"
+                placeholder="Your email address"
+                class="flex-1 bg-gray-900 border-none text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <button
+                class="bg-primary text-black font-bold px-8 py-3 rounded-lg !rounded-button whitespace-nowrap"
+              >
+                Subscribe
+              </button>
+            </div>
+            <div class="mt-6">
+              <label class="custom-checkbox">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                <span class="ml-2 text-sm"
+                  >I agree to receive information about underground events and
+                  music. We respect your privacy and will never share your
+                  information.</span
+                >
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-black border-t border-gray-800">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <a
+              href="#"
+              class="text-3xl font-['Orbitron'] font-black tracking-wider text-primary mb-4 block"
+              >TeKSTROGEN</a
+            >
+            <p class="text-gray-400 mb-6">
+              The hormone of underground electronic music. Experience the pulse
+              of free party culture and the spirit of tekno community.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <div
+                  class="w-10 h-10 flex items-center justify-center border border-gray-700 rounded-full"
+                >
+                  <i class="ri-facebook-fill"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <div
+                  class="w-10 h-10 flex items-center justify-center border border-gray-700 rounded-full"
+                >
+                  <i class="ri-instagram-fill"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <div
+                  class="w-10 h-10 flex items-center justify-center border border-gray-700 rounded-full"
+                >
+                  <i class="ri-soundcloud-fill"></i>
+                </div>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <div
+                  class="w-10 h-10 flex items-center justify-center border border-gray-700 rounded-full"
+                >
+                  <i class="ri-youtube-fill"></i>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Listen Live</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Radio Schedule</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Past Sets</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Upcoming Events</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Free Party Guidelines</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Community Forum</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-4">Resources</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >DIY Sound System Guide</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Free Party Legal Info</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Equipment Rental</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Artist Submissions</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Party Location Maps</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-gray-400 hover:text-primary"
+                  >Support Our Movement</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-4">Contact Us</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <div
+                  class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                >
+                  <i class="ri-mail-line"></i>
+                </div>
+                <span class="text-gray-400">info@tekstrogen.com</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                >
+                  <i class="ri-phone-line"></i>
+                </div>
+                <span class="text-gray-400">Available during events only</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-6 h-6 flex items-center justify-center text-primary mr-2"
+                >
+                  <i class="ri-map-pin-line"></i>
+                </div>
+                <span class="text-gray-400"
+                  >Nomadic - Find us at the next free party</span
+                >
+              </li>
+            </ul>
+            <div class="mt-6">
+              <button
+                class="bg-transparent border border-primary text-primary hover:bg-primary hover:text-black px-4 py-2 rounded-lg !rounded-button whitespace-nowrap"
+              >
+                <i class="ri-headphone-line mr-2"></i> Get Support
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-gray-500 text-sm mb-4 md:mb-0">
+            © 2025 TeKSTROGEN. All rights reserved. The free party continues.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-500 hover:text-primary text-sm"
+              >Privacy Policy</a
+            >
+            <a href="#" class="text-gray-500 hover:text-primary text-sm"
+              >Terms of Use</a
+            >
+            <a href="#" class="text-gray-500 hover:text-primary text-sm"
+              >Cookie Policy</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector("button.md\\:hidden");
+        if (mobileMenuButton) {
+          mobileMenuButton.addEventListener("click", function () {
+            // Mobile menu functionality would go here
+            console.log("Mobile menu clicked");
+          });
+        }
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Audio player functionality
+        const playButton = document.querySelector(".audio-player + div button");
+        if (playButton) {
+          playButton.addEventListener("click", function () {
+            // Toggle play/pause
+            const icon = this.querySelector("i");
+            if (icon.classList.contains("ri-play-fill")) {
+              icon.classList.remove("ri-play-fill");
+              icon.classList.add("ri-pause-fill");
+            } else {
+              icon.classList.remove("ri-pause-fill");
+              icon.classList.add("ri-play-fill");
+            }
+          });
+        }
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Chat functionality
+        const chatInput = document.querySelector(".chat-messages + div input");
+        const chatSendButton = document.querySelector(
+          ".chat-messages + div button"
+        );
+        if (chatInput && chatSendButton) {
+          const sendMessage = function () {
+            const message = chatInput.value.trim();
+            if (message) {
+              const chatMessages = document.querySelector(".chat-messages");
+              const newMessage = document.createElement("div");
+              newMessage.className = "chat-message user";
+              const currentTime = new Date();
+              const hours = currentTime.getHours().toString().padStart(2, "0");
+              const minutes = currentTime
+                .getMinutes()
+                .toString()
+                .padStart(2, "0");
+              newMessage.innerHTML = `
+      <div class="flex items-start justify-end">
+      <div>
+      <div class="flex items-center justify-end">
+      <span class="text-xs text-gray-400 mr-2">${hours}:${minutes}</span>
+      <p class="text-xs font-bold">You</p>
+      </div>
+      <p class="text-sm">${message}</p>
+      </div>
+      </div>
+      `;
+              chatMessages.appendChild(newMessage);
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+              chatInput.value = "";
+            }
+          };
+          chatSendButton.addEventListener("click", sendMessage);
+          chatInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              sendMessage();
+            }
+          });
+        }
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Visualizer animation randomization
+        const bars = document.querySelectorAll(".audio-visualizer .bar");
+        function updateBars() {
+          bars.forEach((bar) => {
+            const height = Math.floor(Math.random() * 25) + 5;
+            bar.style.height = `${height}px`;
+          });
+          setTimeout(updateBars, 100);
+        }
+        updateBars();
+      });
+    </script>
   </body>
 </html>
