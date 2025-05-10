@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Stilurile personalizate din index.html */
+:where([class^="ri-"])::before {
+  content: "\f3c2";
+}
+
+body {
+  font-family: "Orbitron", sans-serif;
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.neon-text {
+  text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+}
+
+.neon-border {
+  box-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
+}
+
+/* Poți adăuga restul stilurilor din index.html mai târziu */
+
+/* Adaugă în src/styles/globals.css */
+html {
+  scroll-behavior: smooth;
+}

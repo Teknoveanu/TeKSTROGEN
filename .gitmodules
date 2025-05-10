@@ -1,0 +1,3 @@
+[submodule "Backend/forum"]
+	path = Backend/forum
+	url = ./Backend/forum

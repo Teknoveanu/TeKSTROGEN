@@ -33,17 +33,13 @@
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
       href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
     <style>
-      :where([class^="ri-"])::before {
-        content: "\f3c2";
+      html {
+        scroll-behavior: smooth;
       }
       body {
         font-family: "Orbitron", sans-serif;
@@ -51,6 +47,11 @@
         color: #fff;
         overflow-x: hidden;
       }
+      /* Optional: RemixIcon usually handles its own content. If icons are missing, uncomment.
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      */
       .neon-text {
         text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff, 0 0 20px #00f0ff;
       }
@@ -109,13 +110,17 @@
         width: 3px;
         background: linear-gradient(to top, #00f0ff, #ff00cc);
         animation: visualize 0.5s infinite alternate;
+        /* height will be controlled by the animation using a CSS variable */
       }
       @keyframes visualize {
         0% {
-          height: 5px;
+          height: 5px; /* Or a smaller fraction of --bar-target-height */
         }
         100% {
-          height: 100%;
+          height: var(
+            --bar-target-height,
+            25px
+          ); /* Animates up to the --bar-target-height */
         }
       }
       .audio-visualizer .bar:nth-child(1) {
@@ -154,7 +159,12 @@
         min-width: 200px;
         background-color: rgba(0, 0, 0, 0.9);
         border: 1px solid #333;
-        background-color: rgba(0, 0, 0, 0.9); /* Fallback for unsupported browsers */
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.9
+        ); /* Fallback for unsupported browsers */
         -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
       }
@@ -303,6 +313,7 @@
               >TeKSTROGEN</a
             >
             <nav class="hidden md:flex space-x-1">
+              <!-- Listen Now dropdown -->
               <div class="dropdown relative">
                 <button
                   class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
@@ -311,74 +322,21 @@
                 </button>
                 <div class="dropdown-menu">
                   <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Live Stream</a
+                    >Listen LIVE</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                  <a href="#schedule" class="block px-4 py-2 hover:bg-gray-800"
                     >Schedule</a
                   >
                   <a href="#" class="block px-4 py-2 hover:bg-gray-800"
                     >Past Sets</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Request Track</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Radio Chat</a
+                  <a href="#genres" class="block px-4 py-2 hover:bg-gray-800"
+                    >TeK Explore</a
                   >
                 </div>
               </div>
-              <div class="dropdown relative">
-                <button
-                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
-                >
-                  About
-                </button>
-                <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >TeKSTROGEN Story</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Our Mission</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800">Team</a>
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Partners</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Press Kit</a
-                  >
-                </div>
-              </div>
-              <div class="dropdown relative">
-                <button
-                  class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
-                >
-                  Free Party
-                </button>
-                <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Upcoming Events</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Past Events</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Location Maps</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Safety Guidelines</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Equipment Rental</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Legal Information</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Party Reports</a
-                  >
-                </div>
-              </div>
+
+              <!-- Community dropdown - include About aici -->
               <div class="dropdown relative">
                 <button
                   class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
@@ -386,56 +344,48 @@
                   Community
                 </button>
                 <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                  <a href="#about" class="block px-4 py-2 hover:bg-gray-800"
+                    >TeKSTROGEN Story</a
+                  >
+                  <a href="#about" class="block px-4 py-2 hover:bg-gray-800"
+                    >Our Mission</a
+                  >
+                  <a href="#community" class="block px-4 py-2 hover:bg-gray-800"
                     >Forum</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Member Profiles</a
+                  <a href="#community" class="block px-4 py-2 hover:bg-gray-800"
+                    >Support</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Crew Directory</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Artist Spotlight</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >DIY Guides</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Knowledge Base</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Support Groups</a
+                  <a href="#about" class="block px-4 py-2 hover:bg-gray-800"
+                    >Team</a
                   >
                 </div>
               </div>
+
+              <!-- Free Party dropdown -->
               <div class="dropdown relative">
                 <button
                   class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
                 >
-                  Stay Tuned
+                  Free Party
                 </button>
                 <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Newsletter</a
+                  <a href="#events" class="block px-4 py-2 hover:bg-gray-800"
+                    >Upcoming Events</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Event Calendar</a
+                  <a href="#events" class="block px-4 py-2 hover:bg-gray-800"
+                    >Past Events</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Announcements</a
+                  <a href="#events" class="block px-4 py-2 hover:bg-gray-800"
+                    >Safety Guidelines</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Weather Alerts</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Transportation Info</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                  <a href="#events" class="block px-4 py-2 hover:bg-gray-800"
                     >Accommodation Tips</a
                   >
                 </div>
               </div>
+
+              <!-- Gallery dropdown -->
               <div class="dropdown relative">
                 <button
                   class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
@@ -443,53 +393,54 @@
                   Gallery
                 </button>
                 <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Photo Albums</a
+                  <a href="#genres" class="block px-4 py-2 hover:bg-gray-800"
+                    >Photo Insights</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                  <a href="#genres" class="block px-4 py-2 hover:bg-gray-800"
                     >Video Archive</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Art Collection</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
+                  <a href="#genres" class="block px-4 py-2 hover:bg-gray-800"
                     >Sound System Showcase</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Location Spotlights</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Community Uploads</a
+                  <a href="#genres" class="block px-4 py-2 hover:bg-gray-800"
+                    >Collections</a
                   >
                 </div>
               </div>
+
+              <!-- Stay Tuned dropdown -->
               <div class="dropdown relative">
                 <button
                   class="px-4 py-2 hover:text-primary whitespace-nowrap !rounded-button"
                 >
-                  Contact
+                  Stay Tuned
                 </button>
                 <div class="dropdown-menu">
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >General Inquiries</a
+                  <a
+                    href="#newsletter"
+                    class="block px-4 py-2 hover:bg-gray-800"
+                    >Newsletter</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Artist Submissions</a
+                  <a
+                    href="#newsletter"
+                    class="block px-4 py-2 hover:bg-gray-800"
+                    >Announcements</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Event Registration</a
+                  <a href="#events" class="block px-4 py-2 hover:bg-gray-800"
+                    >Weather Alerts</a
                   >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Support Ticket</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Feedback Form</a
-                  >
-                  <a href="#" class="block px-4 py-2 hover:bg-gray-800"
-                    >Business Proposals</a
+                  <a href="#schedule" class="block px-4 py-2 hover:bg-gray-800"
+                    >Events Calendar</a
                   >
                 </div>
               </div>
+
+              <!-- Chat Room ca buton, nu dropdown -->
+              <a
+                href="#community"
+                class="px-4 py-2 hover:text-primary whitespace-nowrap"
+                >Chat Room</a
+              >
             </nav>
           </div>
           <div class="flex items-center space-x-4">
@@ -511,7 +462,7 @@
     <section
       class="relative h-screen flex items-center justify-center overflow-hidden"
       style="
-        background-image: url('https://readdy.ai/api/search-image?query=underground%20tekno%20party%20scene%20with%20massive%20sound%20system%20setup%2C%20intense%20laser%20light%20show%2C%20psychedelic%20projections%20on%20walls%2C%20crowd%20silhouettes%2C%20smoke%20effects%2C%20industrial%20warehouse%20setting%2C%20high%20contrast%20lighting%2C%20sharp%20details%2C%20vibrant%20neon%20colors%2C%20cinematic%20composition%2C%20ultra%20high%20quality&width=1920&height=1080&seq=27&orientation=landscape');
+        background-image: url('/assets/images/hero-background.jpg');
         background-size: cover;
         background-position: center;
       "
@@ -607,7 +558,7 @@
     <!-- Main Content -->
     <main class="pt-24 pb-24">
       <!-- About Section -->
-      <section class="py-16 bg-black bg-opacity-80">
+      <section id="about" class="py-24 bg-black bg-opacity-80">
         <div class="container mx-auto px-4">
           <div class="max-w-5xl mx-auto">
             <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
@@ -641,7 +592,7 @@
               <div class="relative">
                 <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
                   <img
-                    src="https://readdy.ai/api/search-image?query=underground%20sound%20system%20setup%20with%20large%20speakers%20stacked%20in%20pyramid%20formation%2C%20tribal%20decorations%2C%20anarchist%20symbols%2C%20dark%20atmosphere%20with%20colorful%20lights%2C%20dust%20particles%20visible%2C%20high%20quality%20cinematic&width=800&height=600&seq=2&orientation=landscape"
+                    src="/assets/images/sound-system-culture.jpg"
                     alt="Sound System Culture"
                     class="w-full h-full object-cover"
                   />
@@ -663,14 +614,7 @@
         </div>
       </section>
       <!-- Upcoming Events Section -->
-      <section
-        class="py-16"
-        style="
-          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20background%20with%20subtle%20geometric%20patterns%2C%20minimal%20techno%20aesthetic%2C%20low%20light%2C%20dark%20colors%20with%20hints%20of%20neon%20blue%20and%20purple%2C%20digital%20texture%2C%20high%20quality&width=1920&height=500&seq=3&orientation=landscape');
-          background-size: cover;
-          background-position: center;
-        "
-      >
+      <section id="events" class="py-24 bg-black bg-opacity-80">
         <div class="container mx-auto px-4">
           <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl md:text-4xl font-bold">
@@ -686,7 +630,7 @@
             >
               <div class="relative">
                 <img
-                  src="https://readdy.ai/api/search-image?query=forest%20rave%20party%20at%20night%2C%20sound%20system%20setup%20among%20trees%2C%20laser%20lights%20cutting%20through%20fog%2C%20people%20dancing%2C%20tribal%20decorations%2C%20campfires%20visible%20in%20background%2C%20high%20quality%20cinematic&width=600&height=400&seq=4&orientation=landscape"
+                  src="/assets/images/events/forest-tekno-gathering.jpg"
                   alt="Forest Tekno Gathering"
                   class="w-full h-48 object-cover"
                 />
@@ -748,7 +692,7 @@
             >
               <div class="relative">
                 <img
-                  src="https://readdy.ai/api/search-image?query=abandoned%20warehouse%20party%2C%20industrial%20setting%2C%20massive%20sound%20system%2C%20laser%20lights%2C%20smoke%20machines%2C%20graffiti%20on%20walls%2C%20crowd%20dancing%2C%20underground%20atmosphere%2C%20high%20quality%20cinematic&width=600&height=400&seq=5&orientation=landscape"
+                  src="/assets/images/events/warehouse-tekno-assault.jpg"
                   alt="Warehouse Tekno Assault"
                   class="w-full h-48 object-cover"
                 />
@@ -810,7 +754,7 @@
             >
               <div class="relative">
                 <img
-                  src="https://readdy.ai/api/search-image?query=desert%20party%20at%20sunset%2C%20sound%20system%20setup%20on%20sand%20dunes%2C%20colorful%20flags%20and%20decorations%2C%20people%20dancing%2C%20dust%20clouds%2C%20orange%20sky%2C%20tribal%20atmosphere%2C%20high%20quality%20cinematic&width=600&height=400&seq=6&orientation=landscape"
+                  src="/assets/images/events/desert-tekno-ritual.jpg"
                   alt="Desert Tekno Ritual"
                   class="w-full h-48 object-cover"
                 />
@@ -871,7 +815,7 @@
         </div>
       </section>
       <!-- Radio Schedule Section -->
-      <section class="py-16 bg-black bg-opacity-90">
+      <section id="schedule" class="py-24 bg-black bg-opacity-90">
         <div class="container mx-auto px-4">
           <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
             Radio <span class="text-primary">Schedule</span>
@@ -1043,14 +987,7 @@
         </div>
       </section>
       <!-- Community Section -->
-      <section
-        class="py-16"
-        style="
-          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20geometric%20pattern%20with%20subtle%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20techno%20style%20background%2C%20high%20quality&width=1920&height=500&seq=7&orientation=landscape');
-          background-size: cover;
-          background-position: center;
-        "
-      >
+      <section id="community" class="py-24">
         <div class="container mx-auto px-4">
           <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
             Join Our <span class="text-primary">Community</span>
@@ -1207,7 +1144,7 @@
         </div>
       </section>
       <!-- Music Genres Section -->
-      <section class="py-16 bg-black bg-opacity-90">
+      <section id="genres" class="py-24 bg-black bg-opacity-90">
         <div class="container mx-auto px-4">
           <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
             Explore Tekno <span class="text-primary">Genres</span>
@@ -1215,7 +1152,7 @@
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=acid%20tekno%20party%2C%20psychedelic%20visuals%2C%20green%20laser%20lights%2C%20dark%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=8&orientation=landscape"
+                src="/assets/images/genres/acid-tekno.jpg"
                 alt="Acid Tekno"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1236,7 +1173,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=hardtek%20party%2C%20intense%20atmosphere%2C%20red%20lighting%2C%20massive%20speakers%2C%20crowd%20dancing%20energetically%2C%20high%20quality%20cinematic&width=400&height=300&seq=9&orientation=landscape"
+                src="/assets/images/genres/hardtek.jpg"
                 alt="Hardtek"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1257,7 +1194,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=frenchcore%20party%2C%20blue%20lighting%2C%20intense%20atmosphere%2C%20crowd%20with%20raised%20hands%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=10&orientation=landscape"
+                src="/assets/images/genres/frenchcore.jpg"
                 alt="Frenchcore"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1278,7 +1215,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=mental%20tribe%20party%2C%20purple%20lighting%2C%20psychedelic%20decorations%2C%20intense%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=11&orientation=landscape"
+                src="/assets/images/genres/mental-tribe.jpg"
                 alt="Mental Tribe"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1299,7 +1236,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=tribe%20tekno%20party%2C%20orange%20lighting%2C%20tribal%20decorations%2C%20spiritual%20atmosphere%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=12&orientation=landscape"
+                src="/assets/images/genres/tribe.jpg"
                 alt="Tribe"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1320,7 +1257,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=tekno%20punk%20party%2C%20anarchist%20symbols%2C%20raw%20atmosphere%2C%20DIY%20sound%20system%2C%20graffiti%2C%20high%20quality%20cinematic&width=400&height=300&seq=13&orientation=landscape"
+                src="/assets/images/genres/tekno-punk.jpg"
                 alt="Tekno Punk"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1341,7 +1278,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=raggatek%20party%2C%20colorful%20lighting%2C%20reggae%20influences%2C%20sound%20system%2C%20smoke%2C%20high%20quality%20cinematic&width=400&height=300&seq=14&orientation=landscape"
+                src="/assets/images/genres/raggatek.jpg"
                 alt="Raggatek"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1362,7 +1299,7 @@
             </div>
             <div class="relative rounded-lg overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=psytrance%20party%2C%20forest%20setting%2C%20psychedelic%20decorations%2C%20colorful%20UV%20reactive%20art%2C%20sound%20system%2C%20high%20quality%20cinematic&width=400&height=300&seq=15&orientation=landscape"
+                src="/assets/images/genres/psytrance.jpg"
                 alt="Psytrance"
                 class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1392,14 +1329,7 @@
         </div>
       </section>
       <!-- Mobile App Section -->
-      <section
-        class="py-16"
-        style="
-          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20techno%20background%20with%20subtle%20blue%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20style%2C%20high%20quality&width=1920&height=500&seq=16&orientation=landscape');
-          background-size: cover;
-          background-position: center;
-        "
-      >
+      <section id="mobile-app" class="py-24">
         <div class="container mx-auto px-4">
           <div class="grid md:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
             <div>
@@ -1481,7 +1411,7 @@
                 class="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary bg-opacity-10 rounded-full blur-xl"
               ></div>
               <img
-                src="https://readdy.ai/api/search-image?query=smartphone%20displaying%20music%20app%20interface%20with%20dark%20theme%2C%20neon%20blue%20accents%2C%20sound%20visualization%2C%20album%20artwork%2C%20tekno%20music%20player%20UI%2C%20high%20quality&width=600&height=800&seq=17&orientation=portrait"
+                src="/assets/images/mobile-app-screenshot.jpg"
                 alt="TeKSTROGEN Mobile App"
                 class="w-full h-auto rounded-xl border border-gray-800 relative z-10"
               />
@@ -1490,7 +1420,7 @@
         </div>
       </section>
       <!-- Gallery Preview Section -->
-      <section class="py-16 bg-black bg-opacity-90">
+      <section class="py-24 bg-black bg-opacity-90">
         <div class="container mx-auto px-4">
           <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl md:text-4xl font-bold">
@@ -1503,7 +1433,7 @@
           <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=underground%20tekno%20party%20with%20massive%20sound%20system%2C%20crowd%20dancing%2C%20laser%20lights%2C%20smoke%2C%20high%20quality%20cinematic&width=500&height=500&seq=18&orientation=squarish"
+                src="/assets/images/gallery/gallery-1.jpg"
                 alt="Gallery Image 1"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1519,7 +1449,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=close-up%20of%20DIY%20sound%20system%20speakers%20at%20tekno%20party%2C%20technical%20setup%2C%20wires%2C%20high%20quality%20cinematic&width=500&height=500&seq=19&orientation=squarish"
+                src="/assets/images/gallery/gallery-2.jpg"
                 alt="Gallery Image 2"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1535,7 +1465,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=DJ%20performing%20at%20underground%20tekno%20party%2C%20vinyl%20records%2C%20mixer%2C%20headphones%2C%20focused%20expression%2C%20high%20quality%20cinematic&width=500&height=500&seq=20&orientation=squarish"
+                src="/assets/images/gallery/gallery-3.jpg"
                 alt="Gallery Image 3"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1551,7 +1481,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=psychedelic%20UV%20reactive%20decorations%20at%20tekno%20party%2C%20tribal%20patterns%2C%20spiritual%20symbols%2C%20neon%20colors%2C%20high%20quality%20cinematic&width=500&height=500&seq=21&orientation=squarish"
+                src="/assets/images/gallery/gallery-4.jpg"
                 alt="Gallery Image 4"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1567,7 +1497,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=aerial%20view%20of%20forest%20tekno%20party%20at%20night%2C%20sound%20systems%2C%20tents%2C%20cars%2C%20campfires%2C%20high%20quality%20cinematic&width=500&height=500&seq=22&orientation=squarish"
+                src="/assets/images/gallery/gallery-5.jpg"
                 alt="Gallery Image 5"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1583,7 +1513,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=crowd%20dancing%20at%20tekno%20party%2C%20silhouettes%2C%20laser%20lights%2C%20smoke%2C%20energetic%20atmosphere%2C%20high%20quality%20cinematic&width=500&height=500&seq=23&orientation=squarish"
+                src="/assets/images/gallery/gallery-6.jpg"
                 alt="Gallery Image 6"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1599,7 +1529,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=sunset%20at%20desert%20tekno%20party%2C%20silhouette%20of%20sound%20system%20against%20orange%20sky%2C%20people%20dancing%2C%20high%20quality%20cinematic&width=500&height=500&seq=24&orientation=squarish"
+                src="/assets/images/gallery/gallery-7.jpg"
                 alt="Gallery Image 7"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1615,7 +1545,7 @@
             </div>
             <div class="relative aspect-square overflow-hidden group">
               <img
-                src="https://readdy.ai/api/search-image?query=close-up%20of%20vinyl%20record%20playing%20on%20turntable%20at%20tekno%20party%2C%20DJ%20hands%2C%20mixer%20controls%2C%20high%20quality%20cinematic&width=500&height=500&seq=25&orientation=squarish"
+                src="/assets/images/gallery/gallery-8.jpg"
                 alt="Gallery Image 8"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -1633,14 +1563,7 @@
         </div>
       </section>
       <!-- Newsletter Section -->
-      <section
-        class="py-16"
-        style="
-          background-image: url('https://readdy.ai/api/search-image?query=abstract%20dark%20background%20with%20subtle%20blue%20neon%20grid%20lines%2C%20digital%20cyberpunk%20aesthetic%2C%20minimal%20techno%20style%2C%20high%20quality&width=1920&height=500&seq=26&orientation=landscape');
-          background-size: cover;
-          background-position: center;
-        "
-      >
+      <section id="newsletter" class="py-24">
         <div class="container mx-auto px-4">
           <div
             class="max-w-3xl mx-auto bg-black bg-opacity-80 rounded-xl p-8 border border-gray-800"
@@ -1734,27 +1657,27 @@
                 >
               </li>
               <li>
-                <a href="#" class="text-gray-400 hover:text-primary"
+                <a href="#schedule" class="text-gray-400 hover:text-primary"
                   >Radio Schedule</a
                 >
               </li>
               <li>
-                <a href="#" class="text-gray-400 hover:text-primary"
+                <a href="#events" class="text-gray-400 hover:text-primary"
                   >Past Sets</a
                 >
               </li>
               <li>
-                <a href="#" class="text-gray-400 hover:text-primary"
+                <a href="#events" class="text-gray-400 hover:text-primary"
                   >Upcoming Events</a
                 >
               </li>
               <li>
-                <a href="#" class="text-gray-400 hover:text-primary"
+                <a href="#events" class="text-gray-400 hover:text-primary"
                   >Free Party Guidelines</a
                 >
               </li>
               <li>
-                <a href="#" class="text-gray-400 hover:text-primary"
+                <a href="#community" class="text-gray-400 hover:text-primary"
                   >Community Forum</a
                 >
               </li>
@@ -1861,59 +1784,79 @@
         if (mobileMenuButton) {
           mobileMenuButton.addEventListener("click", function () {
             // Mobile menu functionality would go here
+            // For example, toggling a class on a nav element:
+            // const nav = document.querySelector('header nav');
+            // nav.classList.toggle('hidden'); // Or your specific class for mobile display
             console.log("Mobile menu clicked");
           });
         }
-      });
-      document.addEventListener("DOMContentLoaded", function () {
-        // Audio player functionality
-        const playButton = document.querySelector(".audio-player + div button");
+
+        // Audio player functionality (Play/Pause button in the header)
+        // Note: Your HTML has multiple play buttons. This targets one in the header.
+        // You might need to adjust selectors if this isn't the intended one.
+        const playButton = document.querySelector(
+          "header .flex.items-center.space-x-4 button:not(.md\\:hidden)"
+        );
         if (playButton) {
           playButton.addEventListener("click", function () {
-            // Toggle play/pause
             const icon = this.querySelector("i");
-            if (icon.classList.contains("ri-play-fill")) {
-              icon.classList.remove("ri-play-fill");
-              icon.classList.add("ri-pause-fill");
-            } else {
-              icon.classList.remove("ri-pause-fill");
-              icon.classList.add("ri-play-fill");
+            if (icon) {
+              icon.classList.toggle("ri-play-fill");
+              icon.classList.toggle("ri-pause-fill");
             }
+            // Add actual audio play/pause logic here
+            console.log("Header Play/Pause button clicked");
           });
         }
-      });
-      document.addEventListener("DOMContentLoaded", function () {
+
+        // Fixed bottom player bar play/pause button
+        const fixedPlayerPlayButton = document.querySelector(
+          ".fixed.bottom-0 button[class*='w-10 h-10']"
+        ); // More specific selector
+        if (fixedPlayerPlayButton) {
+          fixedPlayerPlayButton.addEventListener("click", function () {
+            const icon = this.querySelector("i");
+            if (icon) {
+              icon.classList.toggle("ri-play-fill");
+              icon.classList.toggle("ri-pause-fill");
+            }
+            // Add actual audio play/pause logic here
+            console.log("Fixed player Play/Pause clicked");
+          });
+        }
+
         // Chat functionality
         const chatInput = document.querySelector(".chat-messages + div input");
         const chatSendButton = document.querySelector(
           ".chat-messages + div button"
         );
-        if (chatInput && chatSendButton) {
+        const chatMessagesContainer = document.querySelector(".chat-messages");
+
+        if (chatInput && chatSendButton && chatMessagesContainer) {
           const sendMessage = function () {
             const message = chatInput.value.trim();
             if (message) {
-              const chatMessages = document.querySelector(".chat-messages");
-              const newMessage = document.createElement("div");
-              newMessage.className = "chat-message user";
+              const newMessageDiv = document.createElement("div");
+              newMessageDiv.className = "chat-message user"; // Corrected class name
               const currentTime = new Date();
               const hours = currentTime.getHours().toString().padStart(2, "0");
               const minutes = currentTime
                 .getMinutes()
                 .toString()
                 .padStart(2, "0");
-              newMessage.innerHTML = `
-      <div class="flex items-start justify-end">
-      <div>
-      <div class="flex items-center justify-end">
-      <span class="text-xs text-gray-400 mr-2">${hours}:${minutes}</span>
-      <p class="text-xs font-bold">You</p>
-      </div>
-      <p class="text-sm">${message}</p>
-      </div>
-      </div>
-      `;
-              chatMessages.appendChild(newMessage);
-              chatMessages.scrollTop = chatMessages.scrollHeight;
+              newMessageDiv.innerHTML = `
+                <div class="flex items-start justify-end">
+                  <div>
+                    <div class="flex items-center justify-end">
+                      <span class="text-xs text-gray-400 mr-2">${hours}:${minutes}</span>
+                      <p class="text-xs font-bold">You</p>
+                    </div>
+                    <p class="text-sm">${message}</p>
+                  </div>
+                </div>`; // Ensure this HTML structure matches your design
+              chatMessagesContainer.appendChild(newMessageDiv);
+              chatMessagesContainer.scrollTop =
+                chatMessagesContainer.scrollHeight;
               chatInput.value = "";
             }
           };
@@ -1924,18 +1867,27 @@
             }
           });
         }
-      });
-      document.addEventListener("DOMContentLoaded", function () {
-        // Visualizer animation randomization
-        const bars = document.querySelectorAll(".audio-visualizer .bar");
-        function updateBars() {
-          bars.forEach((bar) => {
-            const height = Math.floor(Math.random() * 25) + 5;
-            bar.style.height = `${height}px`;
+
+        // Visualizer: CSS animation will handle continuous motion.
+        // JS will set the target height for the CSS animation.
+        const visualizerBars = document.querySelectorAll(
+          ".audio-visualizer .bar"
+        );
+        function setVisualizerBarTargetHeights() {
+          visualizerBars.forEach((bar) => {
+            const randomTargetHeight = Math.floor(Math.random() * 20) + 10; // Random height between 10px and 29px
+            bar.style.setProperty(
+              "--bar-target-height",
+              `${randomTargetHeight}px`
+            );
           });
-          setTimeout(updateBars, 100);
         }
-        updateBars();
+
+        if (visualizerBars.length > 0) {
+          setVisualizerBarTargetHeights(); // Set initial random target heights
+          // If you want the *target* of the animation to change periodically, you can add:
+          // setInterval(setVisualizerBarTargetHeights, 2000); // Change targets every 2 seconds, for example
+        }
       });
     </script>
   </body>
